@@ -1,0 +1,45 @@
+#!/usr/bin/php
+<?php
+
+include 'Rocket.php';
+
+$cmds = array(
+    "f" => function($filename){ include $filename; },
+    "h" => "print the usage",
+    "--version" => "print the version"
+);
+
+
+function usage(){
+return <<<EOL
+Usage: rocket [switches]
+  -f, --file      the name of the rocket file to use [default:Rocket]
+  -h, --help      print the usage
+  --version       print the version
+
+EOL;
+}
+
+// shift of the actual filename from the arguments list.
+$filename = array_shift($argv);
+$argc--;
+
+
+print $argc;
+var_dump($argv);
+
+if($argc){
+    for($i=0; $i<$argc; $i+=2){
+        $switch = $argv[$i];
+        $switch = trim($switch, '-');
+        $param = $argv[$i+1];
+
+        if(in_array($switch, array_keys($cmds))){
+            $exec = call_user_func($cmds[$switch], $param);
+        }
+    }
+} else {
+    print usage();
+}
+
+exit(0); // 0 is ok in linux.
